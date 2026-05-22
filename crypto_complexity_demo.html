@@ -94,7 +94,7 @@ canvas { display: block; width: 100%; }
   <!-- RSA -->
   <div id="tab-fatoracao" class="panel">
     <div class="card">
-      <div class="section-title">RSA didático — passo a passo</div>
+      <div class="section-title">RSA didático - passo a passo</div>
       <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px">
         <div>
           <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Primo p</div>
@@ -117,7 +117,7 @@ canvas { display: block; width: 100%; }
       <div id="rsa-steps"></div>
     </div>
     <div class="card">
-      <div class="section-title">Dificuldade de fatoração — experimento empírico</div>
+      <div class="section-title">Dificuldade de fatoração - experimento empírico</div>
       <p style="font-size:12px;color:var(--color-text-secondary);margin:0 0 10px">Tentativas de fatorar n por divisão de tentativa. Observe como o tempo escala com o tamanho dos primos.</p>
       <button class="btn" onclick="runFactorExp()">Executar experimento</button>
       <div id="factor-exp" style="margin-top:12px"></div>
@@ -138,7 +138,7 @@ canvas { display: block; width: 100%; }
   <!-- LWE -->
   <div id="tab-lwe" class="panel">
     <div class="card">
-      <div class="section-title">LWE — Learning with Errors (simplificado)</div>
+      <div class="section-title">LWE - Learning with Errors (simplificado)</div>
       <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin:0 0 12px">
         O problema LWE: dado <span class="mono">(A, b)</span> onde <span class="mono">b = As + e (mod q)</span>, recuperar o segredo <span class="mono">s</span>. O "ruído" <span class="mono">e</span> torna impossível usar eliminação gaussiana simples.
       </p>
@@ -200,7 +200,7 @@ canvas { display: block; width: 100%; }
       </div>
     </div>
     <div class="card">
-      <div class="section-title">Crescimento do tempo de fatoração — simulação</div>
+      <div class="section-title">Crescimento do tempo de fatoração - simulação</div>
       <p style="font-size:12px;color:var(--color-text-secondary);margin:0 0 10px">Passos de divisão tentativa vs GNFS (estimado) para módulos crescentes.</p>
       <div style="position:relative;height:220px"><canvas id="complexChart"></canvas></div>
     </div>
@@ -377,11 +377,11 @@ function initChart(){
 }
 
 const complexRows=[
-  {op:'Cifração RSA',classic:'O(k³) — k bits',quantum:'O(k³)',algo:'Mod. exp.',safe:'Sim (fase)'  },
+  {op:'Cifração RSA',classic:'O(k³) - k bits',quantum:'O(k³)',algo:'Mod. exp.',safe:'Sim (fase)'  },
   {op:'Decifração RSA',classic:'O(k³)',quantum:'O(k³)',algo:'Mod. exp.',safe:'Sim (fase)'},
   {op:'Fatoração (trial)',classic:'O(2^(k/2))',quantum:'O(k³)',algo:'Shor',safe:'Não'},
   {op:'Log. discreto',classic:'O(exp(k^(1/3)))',quantum:'O(k³)',algo:'Shor',safe:'Não'},
-  {op:'LWE (geração)',classic:'O(n²)',quantum:'O(n²)',algo:'—',safe:'Sim'},
+  {op:'LWE (geração)',classic:'O(n²)',quantum:'O(n²)',algo:'-',safe:'Sim'},
   {op:'LWE (criptanálise)',classic:'2^Ω(n)',quantum:'2^Ω(n)',algo:'BKZ',safe:'Sim'},
 ];
 
@@ -392,7 +392,7 @@ complexRows.forEach(r=>{
     <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary)">${r.op}</td>
     <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono);font-size:12px">${r.classic}</td>
     <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono);font-size:12px">${r.quantum}</td>
-    <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary)"><span class="badge ${safe?'badge-teal':'badge-red'}">${safe?'Pós-quântico':'Vulnerável'}</span> ${r.algo!=='—'?`<span style="font-size:11px;color:var(--color-text-secondary)">(${r.algo})</span>`:''}</td>
+    <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary)"><span class="badge ${safe?'badge-teal':'badge-red'}">${safe?'Pós-quântico':'Vulnerável'}</span> ${r.algo!=='-'?`<span style="font-size:11px;color:var(--color-text-secondary)">(${r.algo})</span>`:''}</td>
   </tr>`;
 });
 
