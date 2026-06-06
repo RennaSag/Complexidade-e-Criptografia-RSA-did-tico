@@ -1,401 +1,869 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complexidade e Criptografia  - Demonstração Interativa</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-* { box-sizing: border-box; }
-:root { --accent: #534AB7; --accent2: #0F6E56; --warn: #BA7517; }
-.tab-bar { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; }
-.tab { padding: 8px 16px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; color: var(--color-text-secondary); cursor: pointer; font-size: 13px; transition: all .15s; }
-.tab.active { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
-.panel { display: none; } .panel.active { display: block; }
-.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 20px; margin-bottom: 16px; }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
-.metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
-.metric-val { font-size: 20px; font-weight: 500; color: var(--color-text-primary); font-family: var(--font-mono); }
-.step-box { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); margin-bottom: 8px; }
-.step-num { min-width: 24px; height: 24px; border-radius: 50%; background: var(--color-background-info); color: var(--color-text-info); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; }
-.step-content { font-size: 13px; line-height: 1.6; color: var(--color-text-primary); }
-.mono { font-family: var(--font-mono); font-size: 13px; }
-.badge { display: inline-block; padding: 2px 10px; border-radius: var(--border-radius-md); font-size: 11px; font-weight: 500; }
-.badge-purple { background: #EEEDFE; color: #3C3489; }
-.badge-teal { background: #E1F5EE; color: #085041; }
-.badge-amber { background: #FAEEDA; color: #633806; }
-.badge-red { background: #FCEBEB; color: #A32D2D; }
-@media (prefers-color-scheme: dark) {
-  .badge-purple { background: #26215C; color: #CECBF6; }
-  .badge-teal { background: #04342C; color: #9FE1CB; }
-  .badge-amber { background: #412402; color: #FAC775; }
-  .badge-red { background: #501313; color: #F7C1C1; }
-}
-input[type=range] { width: 100%; }
-.btn { padding: 8px 18px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; color: var(--color-text-primary); cursor: pointer; font-size: 13px; transition: all .15s; }
-.btn:hover { background: var(--color-background-secondary); }
-.btn-primary { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
-.highlight { background: var(--color-background-warning); border-left: 2px solid var(--color-border-warning); padding: 10px 14px; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; font-size: 13px; color: var(--color-text-warning); margin: 8px 0; }
-.err { color: var(--color-text-danger); font-size: 12px; margin-top: 4px; }
-.success { color: var(--color-text-success); font-weight: 500; }
-.fail { color: var(--color-text-danger); font-weight: 500; }
-table.lwe { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 13px; }
-table.lwe td, table.lwe th { padding: 4px 10px; text-align: center; border: 0.5px solid var(--color-border-tertiary); }
-table.lwe th { background: var(--color-background-secondary); font-weight: 500; font-size: 12px; }
-canvas { display: block; width: 100%; }
-.section-title { font-size: 14px; font-weight: 500; margin-bottom: 10px; color: var(--color-text-primary); }
-.sep { height: 0.5px; background: var(--color-border-tertiary); margin: 16px 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0f1117;
+    --bg2:       #171b26;
+    --bg3:       #1e2333;
+    --border:    #2a3050;
+    --text:      #e2e8f0;
+    --muted:     #7a8aa0;
+    --purple:    #7c6ff7;
+    --purple-d:  #3d3680;
+    --purple-l:  #c4bffd;
+    --teal:      #2dd4a0;
+    --teal-d:    #0d4a36;
+    --teal-l:    #9fecd6;
+    --amber:     #f5a623;
+    --amber-d:   #4a2e06;
+    --amber-l:   #fad18a;
+    --red:       #f06060;
+    --red-d:     #4a1010;
+    --red-l:     #f9b4b4;
+    --mono:      'IBM Plex Mono', monospace;
+    --sans:      'IBM Plex Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+ 
+  .header {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1640 50%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 40px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,111,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-tag::before {
+    content: '';
+    display: inline-block;
+    width: 18px; height: 1px;
+    background: var(--purple);
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .header p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 560px;
+  }
+
+  
+  .app { display: flex; min-height: calc(100vh - 120px); }
+
+  .sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+  }
+
+  .nav-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 20px 10px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    width: 100%;
+    text-align: left;
+    font-family: var(--sans);
+  }
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-item.active {
+    color: var(--purple-l);
+    border-left-color: var(--purple);
+    background: rgba(124,111,247,0.08);
+  }
+  .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+
+  .content {
+    flex: 1;
+    padding: 28px 36px;
+    overflow-y: auto;
+    max-width: 900px;
+  }
+
+  
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--purple);
+    flex-shrink: 0;
+  }
+
+  
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+ 
+  .metric {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+  .metric-val { font-size: 22px; font-weight: 600; color: var(--text); font-family: var(--mono); }
+
+  
+  .pillar {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pillar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+  }
+  .pillar.purple::before { background: var(--purple); }
+  .pillar.teal::before   { background: var(--teal); }
+  .pillar.amber::before  { background: var(--amber); }
+  .pillar-name { font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); }
+  .pillar-body { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 10px; }
+  .pillar-body .mono { font-family: var(--mono); font-size: 12px; color: var(--purple-l); }
+
+  
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 9px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--mono);
+  }
+  .badge-purple { background: rgba(124,111,247,0.15); color: var(--purple-l); border: 1px solid rgba(124,111,247,0.3); }
+  .badge-teal   { background: rgba(45,212,160,0.12);  color: var(--teal-l);   border: 1px solid rgba(45,212,160,0.25); }
+  .badge-amber  { background: rgba(245,166,35,0.12);  color: var(--amber-l);  border: 1px solid rgba(245,166,35,0.25); }
+  .badge-red    { background: rgba(240,96,96,0.12);   color: var(--red-l);    border: 1px solid rgba(240,96,96,0.25); }
+
+  
+  .step-box {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .step-num {
+    min-width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(124,111,247,0.2);
+    border: 1px solid rgba(124,111,247,0.4);
+    color: var(--purple-l);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    font-family: var(--mono);
+    flex-shrink: 0;
+  }
+  .step-content { font-size: 13px; line-height: 1.7; color: var(--text); }
+  .step-content b { color: var(--purple-l); }
+
+  
+  .mono { font-family: var(--mono); font-size: 13px; }
+
+  
+  .controls { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 16px; }
+  .ctrl-group { display: flex; flex-direction: column; gap: 5px; }
+  .ctrl-label { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  select, input[type=number] {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 7px 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  select:focus, input[type=number]:focus { border-color: var(--purple); }
+  input[type=number] { width: 90px; }
+
+  .btn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg3);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: var(--sans);
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--purple); color: var(--purple-l); }
+  .btn-primary {
+    background: rgba(124,111,247,0.15);
+    border-color: rgba(124,111,247,0.4);
+    color: var(--purple-l);
+  }
+  .btn-primary:hover { background: rgba(124,111,247,0.25); border-color: var(--purple); }
+
+
+  .callout {
+    background: rgba(245,166,35,0.08);
+    border-left: 3px solid var(--amber);
+    padding: 11px 15px;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: var(--amber-l);
+    margin: 10px 0;
+    line-height: 1.6;
+  }
+  .callout.info {
+    background: rgba(124,111,247,0.08);
+    border-left-color: var(--purple);
+    color: var(--purple-l);
+  }
+
+ 
+  .err    { color: var(--red);  font-size: 12px; margin-top: 6px; font-family: var(--mono); }
+  .success { color: var(--teal); font-weight: 600; }
+  .fail    { color: var(--red);  font-weight: 600; }
+
+  
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--bg3);
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .tbl td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .tbl tr:hover td { background: rgba(255,255,255,0.02); }
+  .tbl .td-mono { font-family: var(--mono); font-size: 12px; color: var(--purple-l); text-align: center; }
+
+  
+  table.lwe { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
+  table.lwe td, table.lwe th { padding: 5px 10px; text-align: center; border: 1px solid var(--border); }
+  table.lwe th { background: var(--bg3); font-weight: 500; font-size: 11px; color: var(--muted); }
+  table.lwe td { background: var(--bg3); }
+
+  .sep { height: 1px; background: var(--border); margin: 14px 0; }
+
+  
+  canvas { display: block; width: 100%; }
+
+  
+  .section-label {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+ 
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .header { padding: 20px; }
+    .content { padding: 16px; }
+    .grid3 { grid-template-columns: 1fr; }
+    .grid2 { grid-template-columns: 1fr; }
+  }
 </style>
-<h2 class="sr-only">Demonstração interativa de criptografia baseada em problemas difíceis: RSA e LWE</h2>
+</head>
+<body>
 
-<div style="padding: 4px 0 8px">
-  <div class="tab-bar">
-    <button class="tab active" onclick="switchTab('intro')">Visão geral</button>
-    <button class="tab" onclick="switchTab('fatoracao')">Fatoração &amp; RSA</button>
-    <button class="tab" onclick="switchTab('lwe')">Reticulados &amp; LWE</button>
-    <button class="tab" onclick="switchTab('complexidade')">Análise de complexidade</button>
-  </div>
+<div class="header">
+  <div class="header-tag">Teoria da Computação</div>
+  <h1>Complexidade &amp; Criptografia</h1>
+  <p>Demonstração interativa de como problemas computacionalmente difíceis sustentam a segurança criptográfica moderna.</p>
+</div>
 
-  <!-- INTRO -->
-  <div id="tab-intro" class="panel active">
-    <div class="card">
-      <div class="section-title">Problemas difíceis como fundação da segurança</div>
-      <p style="font-size:13px;line-height:1.7;color:var(--color-text-secondary);margin:0 0 12px">
-        A criptografia moderna não se baseia em segredo do algoritmo, mas na <em>dificuldade computacional</em> de certos problemas matemáticos. Aqui exploramos três pilares:
-      </p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-        <div class="metric" style="border-left: 2px solid #534AB7">
-          <div class="metric-label">Fatoração inteira</div>
-          <div style="font-size:13px;color:var(--color-text-primary);margin-top:6px">Dado <span class="mono">n = p·q</span>, encontrar <span class="mono">p</span> e <span class="mono">q</span> primos. Base do <strong>RSA</strong>.</div>
-          <div style="margin-top:8px"><span class="badge badge-purple">NP ∩ coNP</span></div>
-        </div>
-        <div class="metric" style="border-left: 2px solid #0F6E56">
-          <div class="metric-label">Logaritmo discreto</div>
-          <div style="font-size:13px;color:var(--color-text-primary);margin-top:6px">Dado <span class="mono">g^x mod p</span>, encontrar <span class="mono">x</span>. Base do <strong>DH / ECDH</strong>.</div>
-          <div style="margin-top:8px"><span class="badge badge-teal">Subexp. clássico</span></div>
-        </div>
-        <div class="metric" style="border-left: 2px solid #BA7517">
-          <div class="metric-label">LWE (reticulados)</div>
-          <div style="font-size:13px;color:var(--color-text-primary);margin-top:6px">Dado <span class="mono">As + e</span>, encontrar <span class="mono">s</span>. Base do <strong>Kyber / Dilithium</strong>.</div>
-          <div style="margin-top:8px"><span class="badge badge-amber">Resistente a quantum</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="section-title">A ameaça quântica</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
-        <div>
-          <div style="font-weight:500;margin-bottom:6px;color:var(--color-text-primary)">Algoritmo de Shor (1994)</div>
-          <p style="color:var(--color-text-secondary);line-height:1.6;margin:0">Quebra RSA e DH em tempo <span class="mono">O((log N)³)</span> em computador quântico. Fatoração vira fácil.</p>
-        </div>
-        <div>
-          <div style="font-weight:500;margin-bottom:6px;color:var(--color-text-primary)">Criptografia pós-quântica</div>
-          <p style="color:var(--color-text-secondary);line-height:1.6;margin:0">LWE e problemas em reticulados permanecem difíceis mesmo para computadores quânticos. NIST padronizou Kyber (2024).</p>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="app">
+  <nav class="sidebar">
+    <div class="nav-label">Módulos</div>
+    <button class="nav-item active" onclick="switchTab('intro')">
+      <span class="nav-icon">1</span> Visão geral
+    </button>
+    <button class="nav-item" onclick="switchTab('fatoracao')">
+      <span class="nav-icon">2</span> Fatoração &amp; RSA
+    </button>
+    <button class="nav-item" onclick="switchTab('lwe')">
+      <span class="nav-icon">3</span> Reticulados &amp; LWE
+    </button>
+    <button class="nav-item" onclick="switchTab('complexidade')">
+      <span class="nav-icon">4</span> Complexidade
+    </button>
+  </nav>
 
-  <!-- RSA -->
-  <div id="tab-fatoracao" class="panel">
-    <div class="card">
-      <div class="section-title">RSA didático - passo a passo</div>
-      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px">
-        <div>
-          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Primo p</div>
-          <select id="rsa-p" style="font-family:var(--font-mono);font-size:13px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
-            <option>5</option><option>7</option><option>11</option><option selected>13</option><option>17</option><option>19</option><option>23</option>
-          </select>
-        </div>
-        <div>
-          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Primo q</div>
-          <select id="rsa-q" style="font-family:var(--font-mono);font-size:13px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
-            <option>5</option><option>7</option><option>11</option><option selected>17</option><option>19</option><option>23</option><option>29</option>
-          </select>
-        </div>
-        <div>
-          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Mensagem m (0 &lt; m &lt; n)</div>
-          <input type="number" id="rsa-m" value="42" min="1" style="width:80px;font-family:var(--font-mono);font-size:13px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
-        </div>
-        <button class="btn btn-primary" onclick="runRSA()">Executar RSA</button>
-      </div>
-      <div id="rsa-steps"></div>
-    </div>
-    <div class="card">
-      <div class="section-title">Dificuldade de fatoração - experimento empírico</div>
-      <p style="font-size:12px;color:var(--color-text-secondary);margin:0 0 10px">Tentativas de fatorar n por divisão de tentativa. Observe como o tempo escala com o tamanho dos primos.</p>
-      <button class="btn" onclick="runFactorExp()">Executar experimento</button>
-      <div id="factor-exp" style="margin-top:12px"></div>
-    </div>
-    <div class="card">
-      <div class="section-title">Tente fatorar você mesmo</div>
-      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-        <div>
-          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">n = p · q</div>
-          <input type="number" id="factor-n" value="221" style="width:120px;font-family:var(--font-mono);font-size:14px;padding:6px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
-        </div>
-        <button class="btn" onclick="factorN()">Fatorar</button>
-      </div>
-      <div id="factor-result" style="margin-top:10px;font-family:var(--font-mono);font-size:13px"></div>
-    </div>
-  </div>
+  <main class="content">
 
-  <!-- LWE -->
-  <div id="tab-lwe" class="panel">
-    <div class="card">
-      <div class="section-title">LWE - Learning with Errors (simplificado)</div>
-      <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin:0 0 12px">
-        O problema LWE: dado <span class="mono">(A, b)</span> onde <span class="mono">b = As + e (mod q)</span>, recuperar o segredo <span class="mono">s</span>. O "ruído" <span class="mono">e</span> torna impossível usar eliminação gaussiana simples.
-      </p>
-      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px">
-        <div>
-          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Módulo q</div>
-          <select id="lwe-q" style="font-family:var(--font-mono);font-size:13px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
-            <option>11</option><option>13</option><option selected>17</option><option>19</option><option>23</option>
-          </select>
+    <!-- ===== INTRO ===== -->
+    <div id="tab-intro" class="panel active">
+      <div class="card">
+        <div class="card-title"><div class="dot"></div>Fundamentos: segurança baseada em dificuldade</div>
+        <p style="font-size:13px;line-height:1.7;color:#8a9ab5;margin-bottom:16px">
+          A criptografia moderna não depende do segredo do algoritmo  - ela depende da
+          <em>dificuldade computacional</em> de certos problemas matemáticos.
+          Algoritmos públicos e auditáveis, cuja quebra exigiria tempo astronomicamente grande.
+        </p>
+        <div class="grid3">
+          <div class="pillar purple">
+            <div class="pillar-name">Fatoração inteira</div>
+            <div class="pillar-body">Dado <span class="mono">n = p x q</span>, encontrar <strong>p</strong> e <strong>q</strong> primos. Base do <strong>RSA</strong>.</div>
+            <span class="badge badge-purple">NP ∩ coNP</span>
+          </div>
+          <div class="pillar teal">
+            <div class="pillar-name">Logaritmo discreto</div>
+            <div class="pillar-body">Dado <span class="mono">g^x mod p</span>, encontrar <strong>x</strong>. Base do <strong>DH / ECDH</strong>.</div>
+            <span class="badge badge-teal">Subexp. clássico</span>
+          </div>
+          <div class="pillar amber">
+            <div class="pillar-name">LWE  x  Reticulados</div>
+            <div class="pillar-body">Dado <span class="mono">As + e</span>, encontrar <strong>s</strong>. Base do <strong>Kyber / Dilithium</strong>.</div>
+            <span class="badge badge-amber">Pós-quântico</span>
+          </div>
         </div>
-        <div>
-          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Dimensão n</div>
-          <select id="lwe-n" style="font-family:var(--font-mono);font-size:13px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
-            <option>2</option><option selected>3</option><option>4</option>
-          </select>
-        </div>
-        <div>
-          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Desvio do ruído σ</div>
-          <select id="lwe-sigma" style="font-family:var(--font-mono);font-size:13px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
-            <option>0 (sem ruído)</option><option selected>1</option><option>2</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" onclick="runLWE()">Gerar instância</button>
       </div>
-      <div id="lwe-output"></div>
-    </div>
-    <div class="card">
-      <div class="section-title">Cifração baseada em LWE (Regev simplificado)</div>
-      <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin:0 0 12px">
-        Cifra um bit usando chave pública LWE. O bit é "embutido" na componente b como ruído adicional.
-      </p>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
-        <div style="font-size:13px">Bit a cifrar:</div>
-        <select id="lwe-bit" style="font-family:var(--font-mono);font-size:13px;padding:4px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
-          <option>0</option><option>1</option>
-        </select>
-        <button class="btn btn-primary" onclick="runLWECrypt()">Cifrar / Decifrar</button>
-      </div>
-      <div id="lwe-crypt-output"></div>
-    </div>
-  </div>
 
-  <!-- COMPLEXIDADE -->
-  <div id="tab-complexidade" class="panel">
-    <div class="card">
-      <div class="section-title">Análise de complexidade assintótica</div>
-      <div style="overflow-x:auto">
-        <table style="width:100%;border-collapse:collapse;font-size:13px">
-          <thead>
-            <tr style="background:var(--color-background-secondary)">
-              <th style="padding:8px 12px;text-align:left;border:0.5px solid var(--color-border-tertiary);font-weight:500">Operação</th>
-              <th style="padding:8px 12px;text-align:center;border:0.5px solid var(--color-border-tertiary);font-weight:500">Clássico</th>
-              <th style="padding:8px 12px;text-align:center;border:0.5px solid var(--color-border-tertiary);font-weight:500">Quântico</th>
-              <th style="padding:8px 12px;text-align:left;border:0.5px solid var(--color-border-tertiary);font-weight:500">Algoritmo</th>
-            </tr>
-          </thead>
-          <tbody id="complexity-table"></tbody>
-        </table>
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--red)"></div>A ameaça quântica</div>
+        <div class="grid2">
+          <div>
+            <div class="section-label">Algoritmo de Shor (1994)</div>
+            <p style="font-size:13px;color:#8a9ab5;line-height:1.7">
+              Um computador quântico executando o algoritmo de Shor quebraria RSA e Diffie-Hellman
+              em tempo <span class="mono" style="color:var(--purple-l)">O((log N)³)</span>  - polinomial.
+              Fatoração, hoje intratável, tornaria-se trivial.
+            </p>
+          </div>
+          <div>
+            <div class="section-label">Criptografia pós-quântica</div>
+            <p style="font-size:13px;color:#8a9ab5;line-height:1.7">
+              LWE e problemas em reticulados permanecem difíceis mesmo para computadores quânticos
+              (melhor algoritmo conhecido: <span class="mono" style="color:var(--teal-l)">2^Ω(n)</span>).
+              O NIST padronizou Kyber/ML-KEM em 2024 (FIPS 203).
+            </p>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:14px">
+          Se P = NP for provado, toda criptografia de chave pública atual seria quebrada em tempo polinomial.
+          A segurança do RSA é uma aposta na separação P ≠ NP.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--teal)"></div>Como usar esta demonstração</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#8a9ab5;line-height:1.6">
+          <div>◆ <strong style="color:var(--text)">Fatoração &amp; RSA</strong>  - execute o RSA passo a passo com primos pequenos e veja o ataque por fatoração.</div>
+          <div>◇ <strong style="color:var(--text)">Reticulados &amp; LWE</strong>  - gere instâncias LWE com e sem ruído, e cifre/decifre um bit com Regev simplificado.</div>
+          <div>◉ <strong style="color:var(--text)">Complexidade</strong>  - compare assintoticamente os algoritmos e visualize o crescimento no gráfico logarítmico.</div>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <div class="section-title">Crescimento do tempo de fatoração - simulação</div>
-      <p style="font-size:12px;color:var(--color-text-secondary);margin:0 0 10px">Passos de divisão tentativa vs GNFS (estimado) para módulos crescentes.</p>
-      <div style="position:relative;height:220px"><canvas id="complexChart"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="section-title">P vs NP e criptografia</div>
-      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">
-        <p style="margin:0 0 8px">A segurança do RSA é <em>condicional</em>: assumimos que fatoração não está em P. Se P = NP, toda criptografia de chave pública atual seria quebrada em tempo polinomial.</p>
-        <p style="margin:0 0 8px">LWE tem redução de pior caso para médio caso: se existe adversário eficiente para LWE em instâncias aleatórias, existe algoritmo eficiente para problemas em reticulados no <em>pior caso</em> (Regev, 2005).</p>
-        <div class="highlight">Isso torna LWE um fundamento mais sólido: a segurança é garantida por toda uma classe de problemas difíceis, não apenas uma conjectura sobre fatoração.</div>
+
+    <!-- ===== RSA ===== -->
+    <div id="tab-fatoracao" class="panel">
+      <div class="card">
+        <div class="card-title"><div class="dot"></div>RSA didático  - passo a passo</div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">Primo p</div>
+            <select id="rsa-p">
+              <option>5</option><option>7</option><option>11</option>
+              <option selected>13</option><option>17</option><option>19</option><option>23</option>
+            </select>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">Primo q</div>
+            <select id="rsa-q">
+              <option>5</option><option>7</option><option>11</option>
+              <option selected>17</option><option>19</option><option>23</option><option>29</option>
+            </select>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">Mensagem m</div>
+            <input type="number" id="rsa-m" value="42" min="1">
+          </div>
+          <button class="btn btn-primary" onclick="runRSA()">▶ Executar</button>
+        </div>
+        <div id="rsa-steps"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--amber)"></div>Dificuldade de fatoração  - experimento empírico</div>
+        <p style="font-size:13px;color:#8a9ab5;margin-bottom:14px;line-height:1.6">
+          Divisão tentativa para fatorar n. Observe como o número de divisões cresce com o tamanho de n.
+        </p>
+        <button class="btn" onclick="runFactorExp()">▶ Executar experimento</button>
+        <div id="factor-exp" style="margin-top:14px"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--teal)"></div>Tente fatorar você mesmo</div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">n = p  x  q</div>
+            <input type="number" id="factor-n" value="221" style="width:130px">
+          </div>
+          <button class="btn" onclick="factorN()">Fatorar</button>
+        </div>
+        <div id="factor-result" style="font-family:var(--mono);font-size:13px;margin-top:4px"></div>
       </div>
     </div>
-  </div>
+
+    <!-- ===== LWE ===== -->
+    <div id="tab-lwe" class="panel">
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--amber)"></div>LWE  - Learning with Errors (simplificado)</div>
+        <p style="font-size:13px;color:#8a9ab5;line-height:1.7;margin-bottom:16px">
+          O problema LWE: dado <span class="mono" style="color:var(--purple-l)">(A, b)</span> onde
+          <span class="mono" style="color:var(--purple-l)">b = As + e (mod q)</span>,
+          recuperar o segredo <span class="mono" style="color:var(--purple-l)">s</span>.
+          O "ruído" <span class="mono" style="color:var(--amber-l)">e</span> torna inviável a eliminação gaussiana.
+        </p>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">Módulo q</div>
+            <select id="lwe-q">
+              <option>11</option><option>13</option><option selected>17</option><option>19</option><option>23</option>
+            </select>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">Dimensão n</div>
+            <select id="lwe-n">
+              <option>2</option><option selected>3</option><option>4</option>
+            </select>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">Ruído σ</div>
+            <select id="lwe-sigma">
+              <option>0 (sem ruído)</option><option selected>1</option><option>2</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="runLWE()">▶ Gerar instância</button>
+        </div>
+        <div id="lwe-output"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--teal)"></div>Cifração LWE  - Regev simplificado</div>
+        <p style="font-size:13px;color:#8a9ab5;line-height:1.7;margin-bottom:14px">
+          Cifra um bit com chave pública LWE. O bit é embutido em b como
+          <span class="mono" style="color:var(--amber-l)">bit  x  ⌊q/2⌋</span>, recuperável
+          se o ruído acumulado for pequeno o suficiente.
+        </p>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">Bit a cifrar</div>
+            <select id="lwe-bit">
+              <option>0</option><option>1</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="runLWECrypt()">▶ Cifrar / Decifrar</button>
+        </div>
+        <div id="lwe-crypt-output"></div>
+      </div>
+    </div>
+
+    <!-- ===== COMPLEXIDADE ===== -->
+    <div id="tab-complexidade" class="panel">
+      <div class="card">
+        <div class="card-title"><div class="dot"></div>Análise de complexidade assintótica</div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Operação</th>
+                <th style="text-align:center">Clássico</th>
+                <th style="text-align:center">Quântico</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="complexity-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--teal)"></div>Crescimento do tempo de fatoração</div>
+        <p style="font-size:12px;color:#8a9ab5;margin-bottom:16px">
+          Passos de divisão tentativa vs GNFS vs Shor (escala logarítmica). Note como o Shor quântico é polinomial enquanto os outros explodem.
+        </p>
+        <div style="position:relative;height:240px">
+          <canvas id="complexChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="dot" style="background:var(--amber)"></div>P vs NP e criptografia</div>
+        <p style="font-size:13px;color:#8a9ab5;line-height:1.7;margin-bottom:10px">
+          A segurança do RSA é <em>condicional</em>: assumimos que fatoração não está em P.
+          Se P = NP fosse provado, toda criptografia de chave pública atual seria quebrada em tempo polinomial.
+        </p>
+        <p style="font-size:13px;color:#8a9ab5;line-height:1.7;margin-bottom:12px">
+          LWE tem redução do pior caso para o caso médio (Regev, 2005): se existe adversário eficiente para LWE
+          em instâncias aleatórias, então existe algoritmo eficiente para problemas em reticulados no
+          <em>pior caso</em> (via oráculo quântico).
+        </p>
+        <div class="callout">
+          Isso torna LWE um fundamento mais sólido que RSA: a segurança é garantida por toda uma classe de
+          problemas difíceis em reticulados, não apenas pela conjectura sobre a dificuldade de fatoração.
+        </div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
 <script>
+
 function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    const names=['intro','fatoracao','lwe','complexidade'];
-    t.classList.toggle('active', names[i]===name);
+  document.querySelectorAll('.nav-item').forEach((btn, i) => {
+    const names = ['intro','fatoracao','lwe','complexidade'];
+    btn.classList.toggle('active', names[i] === name);
   });
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  if(name==='complexidade') initChart();
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'complexidade') initChart();
 }
 
-function gcd(a,b){while(b){[a,b]=[b,a%b];}return a;}
-function modpow(base,exp,mod){let r=1n;base=BigInt(base)%BigInt(mod);exp=BigInt(exp);mod=BigInt(mod);while(exp>0n){if(exp%2n===1n)r=r*base%mod;exp/=2n;base=base*base%mod;}return Number(r);}
-function modinv(a,m){let [old_r,r]=[a,m],[old_s,s]=[1,0];while(r!==0){let q=Math.floor(old_r/r);[old_r,r]=[r,old_r-q*r];[old_s,s]=[s,old_s-q*s];}return((old_s%m)+m)%m;}
 
-function runRSA(){
-  const p=parseInt(document.getElementById('rsa-p').value);
-  const q=parseInt(document.getElementById('rsa-q').value);
-  const m=parseInt(document.getElementById('rsa-m').value);
-  const el=document.getElementById('rsa-steps');
-  if(p===q){el.innerHTML='<div class="err">p e q devem ser distintos.</div>';return;}
-  const n=p*q;
-  const phi=(p-1)*(q-1);
-  if(m>=n||m<=0){el.innerHTML='<div class="err">Mensagem deve ser 0 &lt; m &lt; '+n+'.</div>';return;}
-  let e=3;
-  while(gcd(e,phi)!==1)e+=2;
-  const d=modinv(e,phi);
-  const c=modpow(m,e,n);
-  const m2=modpow(c,d,n);
-  const steps=[
-    {label:'Escolher primos', content:`p = <b>${p}</b>, q = <b>${q}</b> &nbsp;<span class="badge badge-purple">secretos</span>`},
-    {label:'Calcular módulo', content:`n = p · q = <b>${p} · ${q} = ${n}</b> &nbsp;<span class="badge badge-teal">público</span>`},
-    {label:'Calcular totiente', content:`φ(n) = (p−1)(q−1) = ${p-1} · ${q-1} = <b>${phi}</b> &nbsp;<span class="badge badge-purple">secreto</span>`},
-    {label:'Escolher expoente público', content:`e = <b>${e}</b> &nbsp;(mdc(${e}, ${phi}) = ${gcd(e,phi)}) &nbsp;<span class="badge badge-teal">público</span>`},
-    {label:'Calcular expoente privado', content:`d = e⁻¹ mod φ(n) = <b>${d}</b> &nbsp;(e·d mod φ = ${(e*d)%phi}) &nbsp;<span class="badge badge-purple">secreto</span>`},
-    {label:'Cifração', content:`c = mᵉ mod n = ${m}^${e} mod ${n} = <b>${c}</b> &nbsp;<span class="badge badge-teal">criptograma</span>`},
-    {label:'Decifração', content:`m = cᵈ mod n = ${c}^${d} mod ${n} = <b class="${m2===m?'success':'fail'}">${m2}</b> &nbsp;${m2===m?'✓ correto':'✗ erro'}`},
-  ];
-  el.innerHTML=steps.map((s,i)=>`<div class="step-box"><div class="step-num">${i+1}</div><div class="step-content"><b>${s.label}:</b> <span class="mono">${s.content}</span></div></div>`).join('');
+function gcd(a, b) { while (b) { [a, b] = [b, a % b]; } return a; }
+
+function modpow(base, exp, mod) {
+  let r = 1n;
+  base = BigInt(base) % BigInt(mod);
+  exp = BigInt(exp);
+  mod = BigInt(mod);
+  while (exp > 0n) {
+    if (exp % 2n === 1n) r = r * base % mod;
+    exp /= 2n;
+    base = base * base % mod;
+  }
+  return Number(r);
 }
 
-function runFactorExp(){
-  const cases=[
-    {label:'n = 7 × 11', n:77, p:7, q:11},
-    {label:'n = 29 × 37', n:1073, p:29, q:37},
-    {label:'n = 97 × 101', n:9797, p:97, q:101},
-    {label:'n = 509 × 521', n:265189, p:509, q:521},
-    {label:'n = 9973 × 9967', n:99401791, p:9973, q:9967},
+function modinv(a, m) {
+  let [old_r, r] = [a, m], [old_s, s] = [1, 0];
+  while (r !== 0) {
+    const q = Math.floor(old_r / r);
+    [old_r, r] = [r, old_r - q * r];
+    [old_s, s] = [s, old_s - q * s];
+  }
+  return ((old_s % m) + m) % m;
+}
+
+
+function runRSA() {
+  const p = parseInt(document.getElementById('rsa-p').value);
+  const q = parseInt(document.getElementById('rsa-q').value);
+  const m = parseInt(document.getElementById('rsa-m').value);
+  const el = document.getElementById('rsa-steps');
+  if (p === q) { el.innerHTML = '<div class="err"> p e q devem ser distintos.</div>'; return; }
+  const n = p * q;
+  const phi = (p - 1) * (q - 1);
+  if (m >= n || m <= 0) { el.innerHTML = `<div class="err"> Mensagem deve ser 0 &lt; m &lt; ${n}.</div>`; return; }
+  let e = 3;
+  while (gcd(e, phi) !== 1) e += 2;
+  const d = modinv(e, phi);
+  const c = modpow(m, e, n);
+  const m2 = modpow(c, d, n);
+  const steps = [
+    { label: 'Escolher primos',        text: `p = <b>${p}</b>, q = <b>${q}</b>`,                                     badge: 'badge-purple', tag: 'secretos' },
+    { label: 'Calcular módulo',        text: `n = p  x  q = <b>${p}  x  ${q} = ${n}</b>`,                               badge: 'badge-teal',   tag: 'público' },
+    { label: 'Calcular totiente',      text: `φ(n) = (p−1)(q−1) = ${p-1}  x  ${q-1} = <b>${phi}</b>`,                badge: 'badge-purple', tag: 'secreto' },
+    { label: 'Expoente público',       text: `e = <b>${e}</b> &nbsp;(mdc(${e}, ${phi}) = ${gcd(e, phi)})`,          badge: 'badge-teal',   tag: 'público' },
+    { label: 'Expoente privado',       text: `d = e⁻¹ mod φ(n) = <b>${d}</b> &nbsp;(e x d mod φ = ${(e*d)%phi})`,   badge: 'badge-purple', tag: 'secreto' },
+    { label: 'Cifração',               text: `c = m^e mod n = ${m}^${e} mod ${n} = <b>${c}</b>`,                   badge: 'badge-teal',   tag: 'criptograma' },
+    { label: 'Decifração',             text: `m = c^d mod n = ${c}^${d} mod ${n} = <b class="${m2===m?'success':'fail'}">${m2}</b> ${m2===m?'V':'F'}`, badge: m2===m?'badge-teal':'badge-red', tag: m2===m?'correto':'erro' },
   ];
-  let html='<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:var(--color-background-secondary)"><th style="padding:6px 10px;border:0.5px solid var(--color-border-tertiary)">Instância</th><th style="padding:6px 10px;border:0.5px solid var(--color-border-tertiary)">Divisões tentadas</th><th style="padding:6px 10px;border:0.5px solid var(--color-border-tertiary)">Fator menor</th><th style="padding:6px 10px;border:0.5px solid var(--color-border-tertiary)">Bits de n</th></tr></thead><tbody>';
-  cases.forEach(c=>{
-    let steps=0,found=null;
-    for(let i=2;i<=Math.sqrt(c.n)+1;i++){steps++;if(c.n%i===0){found=i;break;}}
-    const bits=Math.ceil(Math.log2(c.n));
-    html+=`<tr><td style="padding:6px 10px;border:0.5px solid var(--color-border-tertiary)" class="mono">${c.label}</td><td style="padding:6px 10px;border:0.5px solid var(--color-border-tertiary);text-align:center" class="mono">${steps.toLocaleString()}</td><td style="padding:6px 10px;border:0.5px solid var(--color-border-tertiary);text-align:center" class="mono">${found}</td><td style="padding:6px 10px;border:0.5px solid var(--color-border-tertiary);text-align:center">${bits} bits</td></tr>`;
+  el.innerHTML = steps.map((s, i) => `
+    <div class="step-box">
+      <div class="step-num">${i + 1}</div>
+      <div class="step-content">
+        <b style="color:#a0b0c8">${s.label}:</b>&nbsp;
+        <span class="mono">${s.text}</span>&nbsp;
+        <span class="badge ${s.badge}">${s.tag}</span>
+      </div>
+    </div>`).join('');
+}
+
+
+function runFactorExp() {
+  const cases = [
+    { label: 'n = 7 × 11',          n: 77 },
+    { label: 'n = 29 × 37',         n: 1073 },
+    { label: 'n = 97 × 101',        n: 9797 },
+    { label: 'n = 509 × 521',       n: 265189 },
+    { label: 'n = 9973 × 9967',     n: 99401791 },
+  ];
+  let html = `<table class="tbl"><thead><tr>
+    <th>Instância</th><th style="text-align:center">Divisões</th>
+    <th style="text-align:center">Fator menor</th><th style="text-align:center">Bits de n</th>
+  </tr></thead><tbody>`;
+  cases.forEach(c => {
+    let steps = 0, found = null;
+    for (let i = 2; i <= Math.sqrt(c.n) + 1; i++) { steps++; if (c.n % i === 0) { found = i; break; } }
+    const bits = Math.ceil(Math.log2(c.n));
+    html += `<tr>
+      <td class="mono">${c.label}</td>
+      <td class="td-mono">${steps.toLocaleString()}</td>
+      <td class="td-mono">${found}</td>
+      <td style="text-align:center"><span class="badge badge-purple">${bits} bits</span></td>
+    </tr>`;
   });
-  html+='</tbody></table><div class="highlight" style="margin-top:10px">Divisão tentativa: O(√n) = O(2^(bits/2)). Para n de 2048 bits, isso é inviável.</div>';
-  document.getElementById('factor-exp').innerHTML=html;
+  html += '</tbody></table>';
+  html += '<div class="callout" style="margin-top:12px">Divisão tentativa: O(√n) = O(2^(bits/2)). Para n de 2048 bits, isso exigiria ~10^308 operações.</div>';
+  document.getElementById('factor-exp').innerHTML = html;
 }
 
-function factorN(){
-  const n=parseInt(document.getElementById('factor-n').value);
-  if(isNaN(n)||n<4){document.getElementById('factor-result').innerHTML='<span class="err">Entre com n ≥ 4.</span>';return;}
-  let found=null,steps=0;
-  for(let i=2;i<=Math.sqrt(n)+1;i++){steps++;if(n%i===0){found=i;break;}}
-  const el=document.getElementById('factor-result');
-  if(found){el.innerHTML=`<span class="success">✓</span> ${n} = <b>${found}</b> × <b>${n/found}</b> &nbsp;(${steps} divisões tentadas)`;}
-  else{el.innerHTML=`<span class="badge badge-teal">${n} é primo</span> (${steps} testes)`;}
+function factorN() {
+  const n = parseInt(document.getElementById('factor-n').value);
+  if (isNaN(n) || n < 4) { document.getElementById('factor-result').innerHTML = '<span class="err"> Entre com n ≥ 4.</span>'; return; }
+  let found = null, steps = 0;
+  for (let i = 2; i <= Math.sqrt(n) + 1; i++) { steps++; if (n % i === 0) { found = i; break; } }
+  const el = document.getElementById('factor-result');
+  if (found) el.innerHTML = `<span class="success"></span> ${n} = <b>${found}</b> × <b>${n / found}</b> &nbsp;<span style="color:var(--muted)">(${steps} divisões)</span>`;
+  else el.innerHTML = `<span class="badge badge-teal">${n} é primo</span> <span style="color:var(--muted)">(${steps} testes)</span>`;
 }
 
-function randInt(max){return Math.floor(Math.random()*max);}
-function randError(sigma){if(sigma===0)return 0;let s=0;for(let i=0;i<12;i++)s+=Math.random()-0.5;return Math.round(s*sigma);}
 
-function runLWE(){
-  const q=parseInt(document.getElementById('lwe-q').value);
-  const n=parseInt(document.getElementById('lwe-n').value);
-  const sigma=[0,1,2][document.getElementById('lwe-sigma').selectedIndex];
-  const m=n+2;
-  const A=Array.from({length:m},()=>Array.from({length:n},()=>randInt(q)));
-  const s=Array.from({length:n},()=>randInt(q));
-  const e=Array.from({length:m},()=>((randError(sigma)%q)+q)%q);
-  const b=A.map((row,i)=>(row.reduce((acc,aij,j)=>acc+aij*s[j],0)+e[i])%q);
-  let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
-  html+='<div><div class="section-title" style="font-size:12px">Matriz A (pública)</div>';
-  html+='<table class="lwe"><thead><tr>'+Array.from({length:n},(_,j)=>`<th>a${j+1}</th>`).join('')+'</tr></thead><tbody>';
-  A.forEach(row=>{html+='<tr>'+row.map(v=>`<td>${v}</td>`).join('')+'</tr>';});
-  html+='</tbody></table></div>';
-  html+='<div>';
-  html+='<div class="section-title" style="font-size:12px">Vetor b = As + e (mod '+q+') (público)</div>';
-  html+='<table class="lwe"><thead><tr><th>b</th>'+(sigma>0?'<th>e (oculto)</th>':'')+'</tr></thead><tbody>';
-  b.forEach((bi,i)=>{html+=`<tr><td>${bi}</td>`+(sigma>0?`<td style="color:var(--color-text-warning)">${e[i]}</td>`:'')+`</tr>`;});
-  html+='</tbody></table>';
-  html+='<div class="sep"></div>';
-  html+='<div class="section-title" style="font-size:12px">Segredo s (oculto)</div>';
-  html+='<table class="lwe"><thead><tr>'+Array.from({length:n},(_,j)=>`<th>s${j+1}</th>`).join('')+'</tr></thead><tbody>';
-  html+='<tr>'+s.map(v=>`<td style="color:var(--color-text-success)">${v}</td>`).join('')+'</tr>';
-  html+='</tbody></table></div></div>';
-  if(sigma>0){html+='<div class="highlight" style="margin-top:12px">Com ruído σ='+(sigma)+', eliminação gaussiana falha: b ≠ As mod q exatamente. O ruído "esconde" s.</div>';}
-  else{html+='<div class="highlight" style="margin-top:12px">Sem ruído: eliminação gaussiana funcionaria em O(n³). O ruído é o que torna LWE difícil.</div>';}
-  document.getElementById('lwe-output').innerHTML=html;
+function randInt(max) { return Math.floor(Math.random() * max); }
+function randError(sigma) {
+  if (sigma === 0) return 0;
+  let s = 0;
+  for (let i = 0; i < 12; i++) s += Math.random() - 0.5;
+  return Math.round(s * sigma);
 }
 
-function runLWECrypt(){
-  const q=17, n=3, bit=parseInt(document.getElementById('lwe-bit').value);
-  const A=Array.from({length:n+1},()=>Array.from({length:n},()=>randInt(q)));
-  const s=Array.from({length:n},()=>randInt(q));
-  const e=Array.from({length:n+1},()=>(Math.random()<0.5?1:-1)*(Math.floor(Math.random()*2)));
-  const b=A.map((row,i)=>(row.reduce((acc,aij,j)=>acc+aij*s[j],0)+e[i])%q);
-  const half=Math.floor(q/2);
-  const r=Array.from({length:n},()=>randInt(2));
-  const u=Array.from({length:n},()=>A.reduce((acc,row,i)=>acc+r[i]*row[0],0));
-  const ct_a=Array.from({length:n},(_,j)=>A.reduce((acc,row,i)=>(acc+r[i]*row[j])%q,0)%q);
-  const ct_b=(b.reduce((acc,bi,i)=>(acc+r[i]*bi)%q,0) + bit*half + q*10)%q;
-  const dec_inner=(ct_a.reduce((acc,ai,j)=>(acc+ai*s[j])%q,0))%q;
-  const noisy=((ct_b-dec_inner)%q+q)%q;
-  const dec_bit=noisy>half/2&&noisy<q-half/2?1:0;
-  let html=`<div class="grid2">`;
-  html+=`<div class="metric"><div class="metric-label">Bit original</div><div class="metric-val">${bit}</div></div>`;
-  html+=`<div class="metric"><div class="metric-label">Bit decifrado</div><div class="metric-val ${dec_bit===bit?'success':'fail'}">${dec_bit} ${dec_bit===bit?'✓':'✗'}</div></div>`;
-  html+=`<div class="metric"><div class="metric-label">Criptograma u₁</div><div class="metric-val">${ct_a[0]}</div></div>`;
-  html+=`<div class="metric"><div class="metric-label">Criptograma v</div><div class="metric-val">${ct_b}</div></div>`;
-  html+=`</div>`;
-  html+=`<div style="margin-top:12px;font-size:13px;color:var(--color-text-secondary);line-height:1.6">`;
-  html+=`<b>Cifração:</b> v = Σrᵢbᵢ + bit·⌊q/2⌋ = ${ct_b}. &nbsp;&nbsp;<b>Decifração:</b> v − u·s = ${noisy} mod ${q}. Limiar = ${Math.floor(half/2)}. `;
-  html+=dec_bit===bit?`<span class="success">Decifração correta!</span>`:`<span class="fail">Erro de decifração (ruído muito alto).</span>`;
-  html+=`</div>`;
-  document.getElementById('lwe-crypt-output').innerHTML=html;
+function runLWE() {
+  const q = parseInt(document.getElementById('lwe-q').value);
+  const n = parseInt(document.getElementById('lwe-n').value);
+  const sigma = [0, 1, 2][document.getElementById('lwe-sigma').selectedIndex];
+  const m = n + 2;
+  const A = Array.from({ length: m }, () => Array.from({ length: n }, () => randInt(q)));
+  const s = Array.from({ length: n }, () => randInt(q));
+  const e = Array.from({ length: m }, () => ((randError(sigma) % q) + q) % q);
+  const b = A.map((row, i) => (row.reduce((acc, aij, j) => acc + aij * s[j], 0) + e[i]) % q);
+
+  let html = '<div class="grid2" style="gap:14px">';
+  html += `<div>
+    <div class="section-label" style="margin-bottom:8px">Matriz A &nbsp;<span class="badge badge-teal">pública</span></div>
+    <table class="lwe"><thead><tr>${Array.from({ length: n }, (_, j) => `<th>a<sub>${j + 1}</sub></th>`).join('')}</tr></thead><tbody>`;
+  A.forEach(row => { html += '<tr>' + row.map(v => `<td>${v}</td>`).join('') + '</tr>'; });
+  html += '</tbody></table></div>';
+
+  html += `<div>
+    <div class="section-label" style="margin-bottom:8px">Vetor b = As + e (mod ${q}) &nbsp;<span class="badge badge-teal">público</span></div>
+    <table class="lwe"><thead><tr><th>b</th>${sigma > 0 ? '<th style="color:var(--amber)">e (oculto)</th>' : ''}</tr></thead><tbody>`;
+  b.forEach((bi, i) => {
+    html += `<tr><td>${bi}</td>${sigma > 0 ? `<td style="color:var(--amber-l)">${e[i]}</td>` : ''}</tr>`;
+  });
+  html += `</tbody></table>
+    <div class="sep"></div>
+    <div class="section-label" style="margin-bottom:8px">Segredo s &nbsp;<span class="badge badge-red">oculto</span></div>
+    <table class="lwe"><thead><tr>${Array.from({ length: n }, (_, j) => `<th>s<sub>${j + 1}</sub></th>`).join('')}</tr></thead><tbody>
+    <tr>${s.map(v => `<td style="color:var(--teal-l)">${v}</td>`).join('')}</tr>
+    </tbody></table>
+  </div>`;
+  html += '</div>';
+
+  if (sigma > 0) {
+    html += `<div class="callout" style="margin-top:12px">Com ruído σ=${sigma}, eliminação gaussiana falha: b ≠ As mod q exatamente. O ruído "esconde" s  - esta é a essência do LWE.</div>`;
+  } else {
+    html += `<div class="callout info" style="margin-top:12px">Sem ruído: eliminação gaussiana resolveria em O(n³). O ruído é o que torna LWE difícil.</div>`;
+  }
+  document.getElementById('lwe-output').innerHTML = html;
 }
 
-function initChart(){
-  if(document.getElementById('complexChart')._done)return;
-  document.getElementById('complexChart')._done=true;
-  const labels=[8,16,32,64,128,256,512,1024];
-  const trial=labels.map(b=>Math.min(Math.pow(2,b/2),1e20));
-  const gnfs=labels.map(b=>{const n=b;return Math.exp(1.923*Math.pow(n*Math.log(2),1/3)*Math.pow(Math.log(n*Math.log(2)),2/3));});
-  const quantum=labels.map(b=>Math.pow(b,3));
-  const dark=matchMedia('(prefers-color-scheme:dark)').matches;
-  const tc=dark?'rgba(255,255,255,0.6)':'rgba(0,0,0,0.6)';
-  const Chart=window.Chart;
-  if(!Chart)return;
-  new Chart(document.getElementById('complexChart'),{
-    type:'line',
-    data:{
-      labels:labels.map(b=>b+' bits'),
-      datasets:[
-        {label:'Divisão tentativa O(√n)',data:trial,borderColor:'#D85A30',borderWidth:2,tension:0.4,pointRadius:3,fill:false,borderDash:[]},
-        {label:'GNFS subexp.',data:gnfs,borderColor:'#534AB7',borderWidth:2,tension:0.4,pointRadius:3,fill:false,borderDash:[6,3]},
-        {label:'Shor quântico O(b³)',data:quantum,borderColor:'#1D9E75',borderWidth:2,tension:0.4,pointRadius:3,fill:false,borderDash:[3,3]},
+function runLWECrypt() {
+  const q = 17, n = 3;
+  const bit = parseInt(document.getElementById('lwe-bit').value);
+  const A = Array.from({ length: n + 1 }, () => Array.from({ length: n }, () => randInt(q)));
+  const s = Array.from({ length: n }, () => randInt(q));
+  const e = Array.from({ length: n + 1 }, () => (Math.random() < 0.5 ? 1 : -1) * Math.floor(Math.random() * 2));
+  const b = A.map((row, i) => (row.reduce((acc, aij, j) => acc + aij * s[j], 0) + e[i]) % q);
+  const half = Math.floor(q / 2);
+  const r = Array.from({ length: n }, () => randInt(2));
+  const ct_a = Array.from({ length: n }, (_, j) => A.reduce((acc, row, i) => (acc + r[i] * row[j]) % q, 0) % q);
+  const ct_b = (b.reduce((acc, bi, i) => (acc + r[i] * bi) % q, 0) + bit * half + q * 10) % q;
+  const dec_inner = (ct_a.reduce((acc, ai, j) => (acc + ai * s[j]) % q, 0)) % q;
+  const noisy = ((ct_b - dec_inner) % q + q) % q;
+  const dec_bit = (noisy > half / 2 && noisy < q - half / 2) ? 1 : 0;
+  const ok = dec_bit === bit;
+
+  let html = `<div class="grid2" style="margin-bottom:14px">
+    <div class="metric"><div class="metric-label">Bit original</div><div class="metric-val">${bit}</div></div>
+    <div class="metric"><div class="metric-label">Bit decifrado</div><div class="metric-val ${ok ? 'success' : 'fail'}">${dec_bit} ${ok ? 'V' : 'F'}</div></div>
+    <div class="metric"><div class="metric-label">Criptograma u₁</div><div class="metric-val">${ct_a[0]}</div></div>
+    <div class="metric"><div class="metric-label">Criptograma v</div><div class="metric-val">${ct_b}</div></div>
+  </div>
+  <div class="callout ${ok ? 'info' : ''}" style="margin:0">
+    <b>Cifração:</b> v = Σrᵢbᵢ + bit x ⌊q/2⌋ = <span class="mono">${ct_b}</span>.&emsp;
+    <b>Decifração:</b> v − u x s = <span class="mono">${noisy}</span> mod ${q}. Limiar = ${Math.floor(half / 2)}.&emsp;
+    ${ok ? '<span class="success"> Decifração correta!</span>' : '<span class="fail"> Erro de decifração  - ruído acumulado ultrapassou o limiar.</span>'}
+  </div>`;
+  document.getElementById('lwe-crypt-output').innerHTML = html;
+}
+
+
+const complexRows = [
+  { op: 'Cifração RSA',       classic: 'O(k³)',            quantum: 'O(k³)',       algo: 'Mod. exp.',  safe: true },
+  { op: 'Decifração RSA',     classic: 'O(k³)',            quantum: 'O(k³)',       algo: 'Mod. exp.',  safe: true },
+  { op: 'Fatoração (trial)',   classic: 'O(2^(k/2))',       quantum: 'O(k³)',       algo: 'Shor',       safe: false },
+  { op: 'Log. discreto',       classic: 'O(exp(k^(1/3)…))', quantum: 'O(k³)',      algo: 'Shor',       safe: false },
+  { op: 'LWE (geração)',       classic: 'O(n²)',            quantum: 'O(n²)',       algo: ' -',          safe: true },
+  { op: 'LWE (criptanálise)',  classic: '2^Ω(n)',           quantum: '2^Ω(n)',      algo: 'BKZ',        safe: true },
+];
+const tbody = document.getElementById('complexity-table');
+complexRows.forEach(r => {
+  tbody.innerHTML += `<tr>
+    <td>${r.op}</td>
+    <td class="td-mono">${r.classic}</td>
+    <td class="td-mono">${r.quantum}</td>
+    <td>
+      <span class="badge ${r.safe ? 'badge-teal' : 'badge-red'}">${r.safe ? 'Pós-quântico' : 'Vulnerável'}</span>
+      ${r.algo !== ' -' ? `<span style="font-size:11px;color:var(--muted);margin-left:6px">${r.algo}</span>` : ''}
+    </td>
+  </tr>`;
+});
+
+
+function initChart() {
+  const canvas = document.getElementById('complexChart');
+  if (canvas._done) return;
+  canvas._done = true;
+  const labels = [8, 16, 32, 64, 128, 256, 512, 1024];
+  const trial   = labels.map(b => Math.min(Math.pow(2, b / 2), 1e20));
+  const gnfs    = labels.map(b => Math.exp(1.923 * Math.pow(b * Math.log(2), 1/3) * Math.pow(Math.log(b * Math.log(2)), 2/3)));
+  const quantum = labels.map(b => Math.pow(b, 3));
+
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: labels.map(b => b + ' bits'),
+      datasets: [
+        { label: 'Divisão tentativa O(√n)', data: trial,   borderColor: '#f06060', borderWidth: 2, tension: 0.4, pointRadius: 4, fill: false },
+        { label: 'GNFS sub-exponencial',    data: gnfs,    borderColor: '#7c6ff7', borderWidth: 2, tension: 0.4, pointRadius: 4, fill: false, borderDash: [6, 3] },
+        { label: 'Shor quântico O(k³)',     data: quantum, borderColor: '#2dd4a0', borderWidth: 2, tension: 0.4, pointRadius: 4, fill: false, borderDash: [3, 3] },
       ]
     },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      scales:{
-        x:{ticks:{color:tc,font:{size:11}},grid:{color:'rgba(128,128,128,0.15)'}},
-        y:{type:'logarithmic',ticks:{color:tc,font:{size:11},callback:v=>v<1e6?v.toFixed(0):'10^'+Math.round(Math.log10(v))},grid:{color:'rgba(128,128,128,0.15)'}},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: '#7a8aa0', font: { size: 11, family: "'IBM Plex Mono'" } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: {
+          type: 'logarithmic',
+          ticks: { color: '#7a8aa0', font: { size: 11 }, callback: v => '10^' + Math.round(Math.log10(Math.max(v, 1))) },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        },
       },
-      plugins:{legend:{labels:{color:tc,font:{size:11},boxWidth:14,padding:12}},tooltip:{callbacks:{label:ctx=>{const v=ctx.raw;return ctx.dataset.label+': ~10^'+Math.round(Math.log10(Math.max(v,1)));}}}},
+      plugins: {
+        legend: { labels: { color: '#a0b0c8', font: { size: 11 }, boxWidth: 16, padding: 16 } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ~10^' + Math.round(Math.log10(Math.max(ctx.raw, 1))) } }
+      }
     }
   });
 }
 
-const complexRows=[
-  {op:'Cifração RSA',classic:'O(k³) - k bits',quantum:'O(k³)',algo:'Mod. exp.',safe:'Sim (fase)'  },
-  {op:'Decifração RSA',classic:'O(k³)',quantum:'O(k³)',algo:'Mod. exp.',safe:'Sim (fase)'},
-  {op:'Fatoração (trial)',classic:'O(2^(k/2))',quantum:'O(k³)',algo:'Shor',safe:'Não'},
-  {op:'Log. discreto',classic:'O(exp(k^(1/3)))',quantum:'O(k³)',algo:'Shor',safe:'Não'},
-  {op:'LWE (geração)',classic:'O(n²)',quantum:'O(n²)',algo:'-',safe:'Sim'},
-  {op:'LWE (criptanálise)',classic:'2^Ω(n)',quantum:'2^Ω(n)',algo:'BKZ',safe:'Sim'},
-];
-
-const tbody=document.getElementById('complexity-table');
-complexRows.forEach(r=>{
-  const safe=r.safe==='Sim';
-  tbody.innerHTML+=`<tr>
-    <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary)">${r.op}</td>
-    <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono);font-size:12px">${r.classic}</td>
-    <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono);font-size:12px">${r.quantum}</td>
-    <td style="padding:7px 12px;border:0.5px solid var(--color-border-tertiary)"><span class="badge ${safe?'badge-teal':'badge-red'}">${safe?'Pós-quântico':'Vulnerável'}</span> ${r.algo!=='-'?`<span style="font-size:11px;color:var(--color-text-secondary)">(${r.algo})</span>`:''}</td>
-  </tr>`;
-});
 
 runRSA();
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</body>
+</html>
