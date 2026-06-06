@@ -1,6 +1,6 @@
 """
 RSA Didático — Implementação educacional com análise de complexidade
-=======================================================================
+
 Disciplina: Teoria da Computação / Complexidade e Criptografia
 
 Complexidade:
@@ -21,7 +21,6 @@ from typing import Tuple, Optional
 
 
 # Aritmética modular
-
 def mdc(a: int, b: int) -> int:
     """Algoritmo de Euclides. Complexidade: O(log min(a,b))."""
     while b:
@@ -70,7 +69,6 @@ def exp_modular(base: int, exp: int, mod: int) -> int:
 
 
 # Testes de primalidade
-
 def miller_rabin(n: int, k: int = 20) -> bool:
     """
     Teste de primalidade probabilístico Miller-Rabin.
@@ -115,7 +113,6 @@ def gerar_primo(bits: int) -> int:
 
 
 # RSA 
-
 class ChavePublicaRSA:
     def __init__(self, e: int, n: int):
         self.e = e
@@ -182,7 +179,6 @@ def decifrar_rsa(c: int, priv: ChavePrivadaRSA) -> int:
 
 
 # Ataque por fatoração
-
 def fatorar_tentativa(n: int, verbose: bool = True) -> Tuple[Optional[int], int, float]:
     """
     Fatoração por divisão tentativa.
@@ -212,7 +208,6 @@ def fatorar_tentativa(n: int, verbose: bool = True) -> Tuple[Optional[int], int,
 
 
 # Demonstrações
-
 def demo_rsa_didatico():
     """RSA com primos pequenos para máxima clareza."""
     print("\n" + "═"*60)
